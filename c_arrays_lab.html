@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C Programming: Arrays Lab | CFBC</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Share+Tech+Mono&family=Exo+2:wght@400;600;700&display=swap');
+:root{--neon:#00ff88;--neon2:#00cfff;--bg:#0a0e1a;--bg2:#0f1629;--card:#131d35;--card2:#1a2540;--orange:#ff6b35;--purple:#a855f7;--yellow:#ffd93d;--red:#ff4757;--white:#e8f4ff;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Exo 2',sans-serif;background:var(--bg);color:var(--white);min-height:100vh;line-height:1.7;overflow-x:hidden;}
+body::before{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(0,255,136,0.015) 40px,rgba(0,255,136,0.015) 41px),repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(0,255,136,0.015) 40px,rgba(0,255,136,0.015) 41px);pointer-events:none;z-index:0;}
+.container{max-width:1100px;margin:0 auto;padding:20px;position:relative;z-index:1;}
+header{text-align:center;padding:50px 20px 30px;position:relative;}
+header::after{content:'';display:block;width:200px;height:3px;background:linear-gradient(90deg,transparent,var(--neon),transparent);margin:20px auto 0;}
+.game-badge{display:inline-block;background:linear-gradient(135deg,var(--purple),#7c3aed);padding:6px 18px;border-radius:20px;font-size:.8rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:15px;}
+h1{font-family:'Orbitron',monospace;font-size:2.6rem;background:linear-gradient(135deg,var(--neon),var(--neon2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1.2;margin-bottom:10px;}
+header p{color:#8899bb;font-size:1.1rem;}
+.xp-bar{background:var(--card);border-radius:30px;height:24px;margin:20px auto;max-width:500px;border:1px solid rgba(0,255,136,.2);overflow:hidden;position:relative;}
+.xp-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--neon),var(--neon2));border-radius:30px;transition:width 1s ease;}
+.xp-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:.8rem;font-weight:700;color:var(--bg);font-family:'Orbitron',monospace;}
+.nav-tabs{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:30px;padding:20px;background:var(--card);border-radius:16px;border:1px solid rgba(0,255,136,.1);}
+.nav-tab{padding:10px 20px;border:2px solid rgba(0,255,136,.2);border-radius:25px;cursor:pointer;font-size:.9rem;font-weight:700;font-family:'Exo 2',sans-serif;background:transparent;color:#8899bb;transition:all .3s;}
+.nav-tab:hover{border-color:var(--neon);color:var(--neon);transform:translateY(-2px);}
+.nav-tab.active{background:linear-gradient(135deg,#00ff8822,#00cfff22);border-color:var(--neon);color:var(--neon);box-shadow:0 0 20px rgba(0,255,136,.2);}
+.section{display:none;animation:fadeUp .5s ease;}
+.section.active{display:block;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px);}to{opacity:1;transform:translateY(0);}}
+.card{background:var(--card);border-radius:20px;padding:30px;margin-bottom:25px;border:1px solid rgba(0,255,136,.1);box-shadow:0 8px 32px rgba(0,0,0,.4);}
+.card h2{font-family:'Orbitron',monospace;font-size:1.5rem;color:var(--neon);margin-bottom:20px;display:flex;align-items:center;gap:12px;}
+.card h3{color:var(--yellow);font-size:1.15rem;margin:20px 0 12px;}
+.card h4{color:var(--neon2);font-size:1rem;margin:15px 0 8px;}
+.card p{color:#c0d4ee;margin-bottom:12px;}
+.infobox{padding:20px;border-radius:14px;margin:18px 0;}
+.infobox.green{background:rgba(0,255,136,.08);border-left:4px solid var(--neon);}
+.infobox.blue{background:rgba(0,207,255,.08);border-left:4px solid var(--neon2);}
+.infobox.orange{background:rgba(255,107,53,.08);border-left:4px solid var(--orange);}
+.infobox.yellow{background:rgba(255,217,61,.08);border-left:4px solid var(--yellow);}
+.infobox.purple{background:rgba(168,85,247,.08);border-left:4px solid var(--purple);}
+.infobox.red{background:rgba(255,71,87,.08);border-left:4px solid var(--red);}
+code,.code-block{font-family:'Share Tech Mono',monospace;}
+.code-block{background:#060c1a;border-radius:12px;padding:20px;margin:14px 0;border:1px solid rgba(0,255,136,.15);overflow-x:auto;font-size:.92rem;line-height:1.8;}
+.code-block .c{color:#68d391;}
+.code-block .k{color:#63b3ed;}
+.code-block .s{color:#fbd38d;}
+.code-block .n{color:#fc8181;}
+.code-block .v{color:#e9c46a;}
+.code-block .w{color:#a8dadc;}
+pre{white-space:pre-wrap;word-wrap:break-word;}
+table.op-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.95rem;}
+table.op-table th{background:linear-gradient(135deg,#1a2540,#243050);padding:12px 15px;text-align:left;color:var(--neon);font-family:'Orbitron',monospace;font-size:.85rem;}
+table.op-table td{padding:12px 15px;border-bottom:1px solid rgba(255,255,255,.07);color:#c0d4ee;}
+table.op-table tr:hover td{background:rgba(0,255,136,.04);}
+table.op-table code{color:var(--yellow);background:rgba(255,217,61,.1);padding:2px 8px;border-radius:4px;}
+.lab-box{background:linear-gradient(135deg,#0d1f3c,#102040);border:2px solid var(--neon2);border-radius:16px;padding:25px;margin:20px 0;position:relative;}
+.lab-badge{position:absolute;top:-13px;left:20px;background:var(--neon2);color:var(--bg);padding:4px 16px;border-radius:20px;font-size:.8rem;font-weight:700;font-family:'Orbitron',monospace;letter-spacing:1px;}
+.lab-box h4{color:var(--neon2);margin-top:10px;font-size:1.1rem;}
+.task-list{list-style:none;margin:12px 0;}
+.task-list li{padding:8px 0 8px 28px;position:relative;color:#c0d4ee;}
+.task-list li::before{content:'▶';position:absolute;left:0;color:var(--neon);font-size:.8rem;top:10px;}
+.btn-row{display:flex;flex-wrap:wrap;gap:10px;margin:15px 0;}
+.btn{padding:10px 22px;border:none;border-radius:25px;cursor:pointer;font-family:'Exo 2',sans-serif;font-weight:700;font-size:.9rem;transition:all .3s;position:relative;overflow:hidden;}
+.btn-hint{background:linear-gradient(135deg,#d69e2e,#b7791f);color:#1a1a2e;}
+.btn-answer{background:linear-gradient(135deg,#48bb78,#2f855a);color:white;}
+.btn-submit{background:linear-gradient(135deg,var(--neon),var(--neon2));color:var(--bg);}
+.btn:hover{transform:translateY(-3px);box-shadow:0 8px 20px rgba(0,0,0,.4);}
+.hint-box,.answer-box{display:none;margin-top:14px;padding:16px;border-radius:12px;animation:fadeUp .4s ease;}
+.hint-box{background:rgba(255,217,61,.07);border:1px solid rgba(255,217,61,.3);}
+.hint-box.show,.answer-box.show{display:block;}
+.answer-box{background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.25);}
+.answer-box .code-block{border-color:rgba(0,255,136,.3);}
+.easter-egg{display:none;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:var(--card2);border:3px solid var(--purple);border-radius:20px;padding:30px 40px;text-align:center;z-index:1000;box-shadow:0 20px 60px rgba(168,85,247,.4);animation:popIn .4s cubic-bezier(.175,.885,.32,1.275);max-width:90vw;}
+.easter-egg.show{display:block;}
+@keyframes popIn{from{transform:translate(-50%,-50%) scale(.5);opacity:0;}to{transform:translate(-50%,-50%) scale(1);opacity:1;}}
+.egg-title{font-family:'Orbitron',monospace;font-size:1.8rem;color:var(--purple);margin-bottom:10px;}
+.egg-close{background:var(--purple);color:white;border:none;padding:10px 25px;border-radius:20px;cursor:pointer;font-family:'Exo 2',sans-serif;font-weight:700;margin-top:15px;}
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;}
+.overlay.show{display:block;}
+.quiz-q{background:var(--card2);border-radius:14px;padding:22px;margin:18px 0;border-left:4px solid var(--neon);}
+.quiz-q h4{color:var(--white);margin-bottom:14px;font-size:1rem;}
+.quiz-opts{display:grid;gap:8px;}
+.quiz-opt{padding:12px 18px;background:rgba(255,255,255,.05);border:2px solid rgba(255,255,255,.1);border-radius:10px;cursor:pointer;color:#c0d4ee;transition:all .3s;font-family:'Exo 2',sans-serif;}
+.quiz-opt:hover{border-color:var(--neon2);color:var(--white);}
+.quiz-opt.chosen{border-color:var(--neon2);background:rgba(0,207,255,.1);color:var(--white);}
+.quiz-opt.correct{border-color:var(--neon);background:rgba(0,255,136,.15);color:var(--neon);}
+.quiz-opt.wrong{border-color:var(--red);background:rgba(255,71,87,.1);color:var(--red);}
+.qfeedback{margin-top:12px;padding:12px;border-radius:10px;font-weight:600;display:none;}
+.qfeedback.show{display:block;}
+.qfeedback.ok{background:rgba(0,255,136,.1);color:var(--neon);}
+.qfeedback.no{background:rgba(255,71,87,.1);color:var(--red);}
+.progress-wrap{background:var(--card2);border-radius:30px;height:12px;margin:15px 0;overflow:hidden;}
+.progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--neon),var(--neon2));transition:width .5s ease;border-radius:30px;}
+.result-box{background:linear-gradient(135deg,#1a3a2a,#0a2a1a);border:2px solid var(--neon);border-radius:20px;padding:30px;text-align:center;margin-top:25px;display:none;}
+.result-box.show{display:block;animation:fadeUp .5s ease;}
+.result-score{font-family:'Orbitron',monospace;font-size:3rem;color:var(--neon);}
+.trophy{font-size:4rem;margin:10px 0;}
+.section-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--neon),transparent);margin:30px 0;}
+.callout{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(99,102,241,.1));border:1px solid rgba(168,85,247,.3);border-radius:14px;padding:20px;margin:16px 0;}
+.callout .label{color:var(--purple);font-weight:700;font-family:'Orbitron',monospace;font-size:.85rem;margin-bottom:8px;}
+ul,ol{padding-left:25px;color:#c0d4ee;}
+li{margin:8px 0;}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:20px 0;}
+.compare-card{background:var(--card2);border-radius:14px;padding:20px;border:1px solid rgba(255,255,255,.08);}
+.compare-card h4{margin-bottom:12px;font-size:1rem;}
+@media(max-width:700px){.compare-grid{grid-template-columns:1fr;}h1{font-size:1.8rem;}}
+
+/* Array visualizer */
+.array-vis{display:flex;gap:0;margin:20px 0;flex-wrap:wrap;}
+.arr-cell{min-width:56px;height:56px;border:2px solid rgba(0,255,136,.4);display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,255,136,.07);position:relative;transition:all .3s;}
+.arr-cell:hover{background:rgba(0,255,136,.18);border-color:var(--neon);}
+.arr-cell .val{color:var(--neon);font-family:'Share Tech Mono',monospace;font-size:1.1rem;font-weight:700;}
+.arr-cell .idx{position:absolute;top:-22px;left:50%;transform:translateX(-50%);color:#8899bb;font-size:.75rem;font-family:'Share Tech Mono',monospace;}
+.arr-cell .name{position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);color:var(--neon2);font-size:.72rem;font-family:'Share Tech Mono',monospace;white-space:nowrap;}
+.arr-cell.highlight{background:rgba(255,217,61,.15);border-color:var(--yellow);}
+.arr-cell.highlight .val{color:var(--yellow);}
+.arr-vis-wrap{padding:30px 15px 35px;background:#060c1a;border-radius:12px;margin:14px 0;border:1px solid rgba(0,255,136,.15);overflow-x:auto;}
+
+/* 2D grid */
+.grid2d{display:inline-flex;flex-direction:column;gap:0;margin:10px 0;}
+.grid2d-row{display:flex;gap:0;}
+.grid2d-cell{width:52px;height:52px;border:2px solid rgba(0,207,255,.3);display:flex;align-items:center;justify-content:center;background:rgba(0,207,255,.06);color:var(--neon2);font-family:'Share Tech Mono',monospace;font-size:.95rem;font-weight:700;transition:all .3s;}
+.grid2d-cell:hover{background:rgba(0,207,255,.18);border-color:var(--neon2);}
+.grid2d-cell.row-header,.grid2d-cell.col-header{background:transparent;border:none;color:#8899bb;font-size:.8rem;}
+
+.tag{display:inline-block;padding:3px 12px;border-radius:12px;font-size:.78rem;font-weight:700;margin:2px;}
+.tag-green{background:rgba(0,255,136,.15);color:var(--neon);border:1px solid rgba(0,255,136,.3);}
+.tag-blue{background:rgba(0,207,255,.15);color:var(--neon2);border:1px solid rgba(0,207,255,.3);}
+.tag-orange{background:rgba(255,107,53,.15);color:var(--orange);border:1px solid rgba(255,107,53,.3);}
+
+/* Interactive trace table */
+.trace-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.07);color:#c0d4ee;font-family:'Share Tech Mono',monospace;}
+.trace-table th{background:#1a2540;padding:10px 14px;color:var(--neon);font-family:'Orbitron',monospace;font-size:.8rem;}
+.trace-table tr.active-row td{background:rgba(0,255,136,.08);color:var(--neon);}
+</style>
+</head>
+<body>
+<div class="overlay" id="overlay" onclick="closeEgg()"></div>
+<div class="easter-egg" id="easter-egg">
+  <div class="egg-title" id="egg-title"></div>
+  <div id="egg-body" style="font-size:1.05rem;color:#c0d4ee;margin:10px 0;line-height:1.7;"></div>
+  <button class="egg-close" onclick="closeEgg()">Let's Keep Coding! 🎶</button>
+</div>
+
+<div class="container">
+<header>
+  <div class="game-badge">🎮 Level Up Your Skills</div>
+  <h1>C PROGRAMMING<br>ARRAYS LAB</h1>
+  <p>1D Arrays · 2D Arrays · Traversal · Matrix Operations</p>
+  <div class="xp-bar"><div class="xp-fill" id="xp-fill"></div><div class="xp-text" id="xp-text">0 XP</div></div>
+</header>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="showSection('intro')">🚀 What is an Array?</button>
+  <button class="nav-tab" onclick="showSection('onedim')">📦 1D Arrays</button>
+  <button class="nav-tab" onclick="showSection('traverse')">🔁 Traversal</button>
+  <button class="nav-tab" onclick="showSection('twodim')">🗂 2D Arrays</button>
+  <button class="nav-tab" onclick="showSection('matrix')">➕ Matrix Ops</button>
+  <button class="nav-tab" onclick="showSection('refactor')">🛠 Refactor Lab</button>
+  <button class="nav-tab" onclick="showSection('quiz')">🏆 Quiz (25Q)</button>
+</div>
+
+<!-- ===== INTRO ===== -->
+<div id="intro" class="section active">
+<div class="card">
+  <h2>🚀 What is an Array?</h2>
+  <p>So far, every variable you've declared holds <strong>one value</strong> at a time. But what if a Spotify playlist has 50 songs? Or a WhatsApp group has 100 members? You can't write <code>int member1, member2, member3...</code> for 100 people! That's where <strong>arrays</strong> come in.</p>
+
+  <div class="infobox purple">
+    <h4>📱 The Real-World Analogy: A WhatsApp Group Chat</h4>
+    <p>Think of a WhatsApp group called "CFBC CS Class". It's a single group (one name), but it contains <em>many members</em>. An array works exactly the same way — one name, many values stored in contiguous memory slots.</p>
+  </div>
+
+  <h3>The Official Definition</h3>
+  <div class="infobox blue">
+    <p>An <strong>array</strong> is a container in which <strong>numerous variables of the same data type</strong> are stored in <strong>contiguous (side-by-side) memory locations</strong>. Array elements are accessed by their <strong>index numbers</strong>.</p>
+  </div>
+
+  <h3>Two Types of Arrays in C</h3>
+  <div class="compare-grid">
+    <div class="compare-card" style="border-color:rgba(0,255,136,.3);">
+      <h4 style="color:var(--neon);">📦 One-Dimensional (1D)</h4>
+      <p style="color:#c0d4ee;">A single list of values — like a Spotify playlist, a leaderboard, or a row of seats.</p>
+      <div class="code-block" style="font-size:.85rem;"><pre><span class="k">int</span> scores[5] = {95, 88, 72, 90, 61};</pre></div>
+    </div>
+    <div class="compare-card" style="border-color:rgba(0,207,255,.3);">
+      <h4 style="color:var(--neon2);">🗂 Multi-Dimensional (2D)</h4>
+      <p style="color:#c0d4ee;">A grid of values — like a Minecraft world map, a seating plan, or a spreadsheet.</p>
+      <div class="code-block" style="font-size:.85rem;"><pre><span class="k">int</span> grid[3][3] = {{1,2,3},{4,5,6},{7,8,9}};</pre></div>
+    </div>
+  </div>
+</div>
+
+<div class="card">
+  <h2>🔢 Zero-Based Indexing — The Most Important Rule!</h2>
+  <p>In C, arrays start counting at <strong>index 0</strong>, not 1. This confuses almost every beginner at first, but once it clicks it never leaves you.</p>
+
+  <div class="infobox red">
+    <h4>⚠️ If you declare <code>int arr[5];</code> — the valid indices are 0, 1, 2, 3, 4</h4>
+    <p>There is <strong>NO</strong> <code>arr[5]</code>! That would be index 5 on a 5-element array — it's out of bounds and causes nasty bugs. The last valid index is always <strong>size - 1</strong>.</p>
+  </div>
+
+  <h3>Visualising <code>int scores[6]</code></h3>
+  <div class="arr-vis-wrap">
+    <div class="array-vis" id="intro-vis">
+      <div class="arr-cell"><span class="idx">0</span><span class="val">95</span><span class="name">scores[0]</span></div>
+      <div class="arr-cell"><span class="idx">1</span><span class="val">88</span><span class="name">scores[1]</span></div>
+      <div class="arr-cell"><span class="idx">2</span><span class="val">72</span><span class="name">scores[2]</span></div>
+      <div class="arr-cell"><span class="idx">3</span><span class="val">90</span><span class="name">scores[3]</span></div>
+      <div class="arr-cell"><span class="idx">4</span><span class="val">61</span><span class="name">scores[4]</span></div>
+      <div class="arr-cell"><span class="idx">5</span><span class="val">78</span><span class="name">scores[5]</span></div>
+    </div>
+  </div>
+  <p style="color:#8899bb;font-size:.9rem;text-align:center;margin-top:8px;">← 6 elements (size=6) → valid indices: 0 through 5 →</p>
+
+  <div class="callout">
+    <div class="label">🎵 6-7 Easter Egg — Click to unlock!</div>
+    <p>Notice anything special about the values in that array? Indices 5 and 6 of a 6-element array... reminds you of something? 👀</p>
+    <div style="margin-top:12px;">
+      <button class="btn btn-submit" onclick="triggerEgg('egg_67')">🎶 What's the connection?</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 1D ARRAYS ===== -->
+<div id="onedim" class="section">
+<div class="card">
+  <h2>📦 One-Dimensional Arrays</h2>
+  <p>A 1D array is a <strong>linear (straight-line) list</strong> of values of the same type. Think Spotify queue, TikTok For You page ordering, or a gaming leaderboard.</p>
+
+  <h3>Syntax: Declaring a 1D Array</h3>
+  <div class="infobox green">
+    <div class="code-block"><pre><span class="k">data_type  array_name</span>[<span class="v">size</span>];</pre></div>
+    <p>The <strong>size</strong> must be an integer constant greater than zero — it tells C how many memory slots to reserve.</p>
+  </div>
+
+  <h3>Three Ways to Create Arrays</h3>
+  <table class="op-table">
+    <thead><tr><th>Method</th><th>Code</th><th>What happens</th></tr></thead>
+    <tbody>
+      <tr><td>Declare only</td><td><code>int scores[5];</code></td><td>5 slots reserved, values are garbage (undefined)</td></tr>
+      <tr><td>Declare + full initialise</td><td><code>int scores[5] = {90,85,70,95,88};</code></td><td>All 5 values set at declaration</td></tr>
+      <tr><td>Partial initialise</td><td><code>int scores[5] = {90,85};</code></td><td>First 2 set, rest automatically become 0</td></tr>
+    </tbody>
+  </table>
+
+  <div class="infobox yellow">
+    <h4>💡 Shortcut: Let C Count the Size!</h4>
+    <p>If you provide values, you can omit the size and C figures it out:</p>
+    <div class="code-block"><pre><span class="k">int</span> scores[] = {90, 85, 70, 95, 88};  <span class="c">// C knows size = 5</span></pre></div>
+  </div>
+
+  <h3>Reading &amp; Writing Individual Elements</h3>
+  <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> playlist[5];    <span class="c">// declare 5-element array</span>
+
+    <span class="c">// Assign individual elements</span>
+    playlist[0] = 6;    <span class="c">// first element</span>
+    playlist[1] = 7;    <span class="c">// second element — wait... 6 and 7? 🤔</span>
+    playlist[2] = 120;
+    playlist[3] = 240;
+    playlist[4] = 360;
+
+    <span class="c">// Access individual elements</span>
+    <span class="k">printf</span>(<span class="s">"First BPM: %d\n"</span>, playlist[0]);  <span class="c">// prints 6</span>
+    <span class="k">printf</span>(<span class="s">"Second BPM: %d\n"</span>, playlist[1]); <span class="c">// prints 7</span>
+    <span class="k">printf</span>(<span class="s">"Last BPM: %d\n"</span>, playlist[4]);  <span class="c">// prints 360</span>
+
+    <span class="k">return</span> 0;
+}</pre></div>
+
+  <div class="section-divider"></div>
+
+  <!-- LAB 1 -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 1</div>
+    <h4>Spotify Vibe Check — Array Basics</h4>
+    <p>You're building a music app. Store and display song duration data (in seconds) for a 5-track playlist.</p>
+    <ul class="task-list">
+      <li>Declare <code>int duration[5];</code></li>
+      <li>Initialise: {213, 187, 245, 198, 221} — these are your 5 song lengths</li>
+      <li>Print each duration with a label: "Track 1: 213 seconds"</li>
+      <li>Also print the duration of the LAST track using index 4</li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-hint" onclick="toggleBox('hint1a')">💡 Hint 1</button>
+      <button class="btn btn-hint" onclick="toggleBox('hint1b')">💡 Hint 2</button>
+      <button class="btn btn-answer" onclick="toggleBox('ans1')">✅ Show Answer</button>
+    </div>
+    <div class="hint-box" id="hint1a">
+      Initialise at declaration: <code>int duration[5] = {213, 187, 245, 198, 221};</code>. Remember: the number you put in <code>[]</code> at declaration is the SIZE. When you ACCESS elements later, you use 0 through size-1.
+    </div>
+    <div class="hint-box" id="hint1b">
+      For "Track 1", the element is at <code>duration[0]</code> (index 0). For "Track 5" (the last track), the element is at <code>duration[4]</code> (index 4, which is size-1).
+    </div>
+    <div class="answer-box" id="ans1">
+      <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> duration[5] = {213, 187, 245, 198, 221};
+
+    <span class="k">printf</span>(<span class="s">"Track 1: %d seconds\n"</span>, duration[0]);
+    <span class="k">printf</span>(<span class="s">"Track 2: %d seconds\n"</span>, duration[1]);
+    <span class="k">printf</span>(<span class="s">"Track 3: %d seconds\n"</span>, duration[2]);
+    <span class="k">printf</span>(<span class="s">"Track 4: %d seconds\n"</span>, duration[3]);
+    <span class="k">printf</span>(<span class="s">"Track 5: %d seconds\n"</span>, duration[4]);
+
+    <span class="k">printf</span>(<span class="s">"\nLast track is at index 4: %d seconds\n"</span>, duration[4]);
+    <span class="k">return</span> 0;
+}</pre></div>
+      <p>🎯 Notice: "Track 1" maps to <code>duration[0]</code>. The human counts from 1, C counts from 0. Always remember to subtract 1!</p>
+    </div>
+  </div>
+
+  <!-- LAB 2 -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 2</div>
+    <h4>Array Index Tracing — What Does This Print?</h4>
+    <p>Trace through this code mentally and predict the output BEFORE running it. No hints allowed — this is a test of your zero-index understanding!</p>
+    <div class="code-block"><pre><span class="k">int</span> drops[] = {100, 200, 300, 400, 500};
+<span class="k">printf</span>(<span class="s">"%d\n"</span>, drops[0]);
+<span class="k">printf</span>(<span class="s">"%d\n"</span>, drops[2]);
+<span class="k">printf</span>(<span class="s">"%d\n"</span>, drops[4]);
+drops[1] = drops[1] + drops[3];
+<span class="k">printf</span>(<span class="s">"%d\n"</span>, drops[1]);</pre></div>
+    <div class="btn-row">
+      <button class="btn btn-answer" onclick="toggleBoxEgg('ans2','egg_drops')">✅ Reveal Output</button>
+    </div>
+    <div class="answer-box" id="ans2">
+      <div class="code-block"><pre>100    ← drops[0]
+300    ← drops[2]
+500    ← drops[4]
+600    ← drops[1] was 200, drops[3] was 400 → 200+400=600</pre></div>
+      <p>🎯 Key insight: accessing <code>drops[2]</code> gives the THIRD element (0→100, 1→200, 2→300). And you can use array values inside expressions just like regular variables!</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== TRAVERSAL ===== -->
+<div id="traverse" class="section">
+<div class="card">
+  <h2>🔁 Traversing Arrays with Loops</h2>
+  <p>Accessing array elements one-by-one manually (like we did in Lab 1) is fine for small arrays. But what if you have 1000 songs? You need a <strong>loop</strong> to traverse (go through) the array automatically!</p>
+
+  <div class="infobox purple">
+    <h4>🎮 The Magic Connection: Loops + Arrays = Power Combo</h4>
+    <p>A loop counter <code>i</code> that goes from <code>0</code> to <code>size-1</code> maps perfectly to array indices! This is why arrays and for-loops are basically best friends in C.</p>
+  </div>
+
+  <h3>Pattern: Read Array from User Input</h3>
+  <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> arr[10];
+    <span class="k">int</span> i;
+
+    <span class="k">printf</span>(<span class="s">"Enter elements of array: "</span>);
+    <span class="k">for</span> (i = 0; i < 10; i++) {           <span class="c">// i goes 0,1,2...9</span>
+        <span class="k">scanf</span>(<span class="s">"%d\n"</span>, &arr[i]);           <span class="c">// &arr[i] = address of slot i</span>
+    }
+
+    <span class="k">printf</span>(<span class="s">"\nElements of array are:\n"</span>);
+    <span class="k">for</span> (i = 0; i < 10; i++) {           <span class="c">// second pass to print</span>
+        <span class="k">printf</span>(<span class="s">"%d\n"</span>, arr[i]);
+    }
+    <span class="k">return</span> 0;
+}</pre></div>
+
+  <div class="infobox blue">
+    <h4>👁 How the Loop Accesses Each Element</h4>
+    <p>When <code>i = 0</code>: reads/writes <code>arr[0]</code> <br>
+    When <code>i = 1</code>: reads/writes <code>arr[1]</code> <br>
+    When <code>i = 9</code>: reads/writes <code>arr[9]</code> ← last valid index <br>
+    When <code>i = 10</code>: loop exits (condition <code>i &lt; 10</code> is now false)</p>
+  </div>
+
+  <h3>Common Array Operations</h3>
+
+  <div class="callout">
+    <div class="label">🎵 Scenario: Machel's Concert Ticket Sales</div>
+    <p>Track daily ticket sales for 7 days (hint: 6-7 soca vibes incoming 🎺). Find the total, maximum, and minimum!</p>
+  </div>
+
+  <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> sales[7] = {120, 145, 200, 98, 310, 275, 180};
+    <span class="k">int</span> total = 0, max, min;
+    <span class="k">int</span> i;
+
+    max = sales[0];   <span class="c">// assume first element is max</span>
+    min = sales[0];   <span class="c">// assume first element is min</span>
+
+    <span class="k">for</span> (i = 0; i < 7; i++) {
+        total += sales[i];               <span class="c">// accumulate total</span>
+
+        <span class="k">if</span> (sales[i] > max) max = sales[i];  <span class="c">// update max</span>
+        <span class="k">if</span> (sales[i] < min) min = sales[i];  <span class="c">// update min</span>
+    }
+
+    <span class="k">printf</span>(<span class="s">"Total tickets sold: %d\n"</span>, total);
+    <span class="k">printf</span>(<span class="s">"Best day: %d tickets\n"</span>, max);
+    <span class="k">printf</span>(<span class="s">"Slowest day: %d tickets\n"</span>, min);
+    <span class="k">printf</span>(<span class="s">"Average per day: %.1f\n"</span>, (float)total / 7);
+    <span class="k">return</span> 0;
+}</pre></div>
+
+  <h3>Trace Table — Step by Step</h3>
+  <div style="overflow-x:auto;">
+    <table class="op-table trace-table">
+      <thead><tr><th>i</th><th>sales[i]</th><th>total</th><th>max</th><th>min</th></tr></thead>
+      <tbody>
+        <tr><td>Start</td><td>—</td><td>0</td><td>120</td><td>120</td></tr>
+        <tr><td>0</td><td>120</td><td>120</td><td>120</td><td>120</td></tr>
+        <tr><td>1</td><td>145</td><td>265</td><td>145</td><td>120</td></tr>
+        <tr><td>2</td><td>200</td><td>465</td><td>200</td><td>120</td></tr>
+        <tr><td>3</td><td>98</td><td>563</td><td>200</td><td>98 ↓</td></tr>
+        <tr><td>4</td><td>310</td><td>873</td><td>310 ↑</td><td>98</td></tr>
+        <tr><td>5</td><td>275</td><td>1148</td><td>310</td><td>98</td></tr>
+        <tr class="active-row"><td>6</td><td>180</td><td><strong>1328</strong></td><td><strong>310</strong></td><td><strong>98</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- LAB 3 -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 3</div>
+    <h4>Fortnite Squad XP Tracker</h4>
+    <p>Your squad of 5 just finished a Fortnite tournament. Accept each player's XP from the user using a loop, then find and display the squad total XP and the player with the highest XP (their index).</p>
+    <ul class="task-list">
+      <li>Declare <code>int xp[5];</code></li>
+      <li>Use a for loop with scanf to accept 5 XP values</li>
+      <li>Use another for loop to find: total XP, index of max XP player</li>
+      <li>Print: total, highest XP, and which player number achieved it</li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-hint" onclick="toggleBox('hint3a')">💡 Hint 1: Input Loop</button>
+      <button class="btn btn-hint" onclick="toggleBox('hint3b')">💡 Hint 2: Find Max Index</button>
+      <button class="btn btn-answer" onclick="toggleBox('ans3')">✅ Show Answer</button>
+    </div>
+    <div class="hint-box" id="hint3a">
+      Input loop: <code>for (i = 0; i &lt; 5; i++) { printf("Player %d XP: ", i+1); scanf("%d", &xp[i]); }</code> — notice <code>i+1</code> in the prompt so players see "Player 1", not "Player 0"!
+    </div>
+    <div class="hint-box" id="hint3b">
+      To track which index has the max, declare <code>int maxIdx = 0;</code>. In the loop: <code>if (xp[i] &gt; xp[maxIdx]) { maxIdx = i; }</code>. At the end, <code>xp[maxIdx]</code> is the highest and <code>maxIdx+1</code> is the player number.
+    </div>
+    <div class="answer-box" id="ans3">
+      <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> xp[5];
+    <span class="k">int</span> i, total = 0, maxIdx = 0;
+
+    <span class="k">for</span> (i = 0; i < 5; i++) {
+        <span class="k">printf</span>(<span class="s">"Enter Player %d XP: "</span>, i + 1);
+        <span class="k">scanf</span>(<span class="s">"%d"</span>, &xp[i]);
+    }
+
+    <span class="k">for</span> (i = 0; i < 5; i++) {
+        total += xp[i];
+        <span class="k">if</span> (xp[i] > xp[maxIdx]) maxIdx = i;
+    }
+
+    <span class="k">printf</span>(<span class="s">"\n=== Squad Report ===\n"</span>);
+    <span class="k">printf</span>(<span class="s">"Total Squad XP : %d\n"</span>, total);
+    <span class="k">printf</span>(<span class="s">"MVP: Player %d with %d XP! 🏆\n"</span>, maxIdx + 1, xp[maxIdx]);
+    <span class="k">return</span> 0;
+}</pre></div>
+      <p>🎯 <strong>Why <code>maxIdx + 1</code> in the output?</strong> Players are indexed 0–4, but we say "Player 1–5". Adding 1 when printing converts from array-world (0-based) back to human-world (1-based)!</p>
+    </div>
+  </div>
+
+  <!-- LAB 4 -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 4</div>
+    <h4>TikTok Views Reversal</h4>
+    <p>Accept 6 TikTok view counts into an array, then print them in REVERSE order using a loop counting backwards!</p>
+    <ul class="task-list">
+      <li>Declare and fill <code>int views[6];</code> using a loop</li>
+      <li>Print the array forward first (as normal)</li>
+      <li>Print the array in reverse — use a loop counting DOWN: <code>i = 5; i &gt;= 0; i--</code></li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-hint" onclick="toggleBox('hint4')">💡 Hint: Reverse Loop</button>
+      <button class="btn btn-answer" onclick="toggleBoxEgg('ans4','egg_reverse')">✅ Show Answer</button>
+    </div>
+    <div class="hint-box" id="hint4">
+      A countdown loop: <code>for (i = 5; i &gt;= 0; i--)</code>. Start at the last valid index (5 for a size-6 array), count down to 0. On each step, <code>views[i]</code> gives you the element from the end backwards!
+    </div>
+    <div class="answer-box" id="ans4">
+      <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> views[6];
+    <span class="k">int</span> i;
+
+    <span class="k">for</span> (i = 0; i < 6; i++) {
+        <span class="k">printf</span>(<span class="s">"Enter view count %d: "</span>, i + 1);
+        <span class="k">scanf</span>(<span class="s">"%d"</span>, &views[i]);
+    }
+
+    <span class="k">printf</span>(<span class="s">"\n▶️  Forward: "</span>);
+    <span class="k">for</span> (i = 0; i < 6; i++)
+        <span class="k">printf</span>(<span class="s">"%d  "</span>, views[i]);
+
+    <span class="k">printf</span>(<span class="s">"\n⏪ Reversed: "</span>);
+    <span class="k">for</span> (i = 5; i >= 0; i--)     <span class="c">// start at last index!</span>
+        <span class="k">printf</span>(<span class="s">"%d  "</span>, views[i]);
+
+    <span class="k">printf</span>(<span class="s">"\n"</span>);
+    <span class="k">return</span> 0;
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== 2D ARRAYS ===== -->
+<div id="twodim" class="section">
+<div class="card">
+  <h2>🗂 Two-Dimensional Arrays</h2>
+  <p>A 2D array is essentially a <strong>table or grid</strong> — it has rows AND columns. Think of it as an array of arrays. Perfect for: seating charts, Minecraft world maps, spreadsheet data, or a game board.</p>
+
+  <div class="infobox blue">
+    <h4>Syntax</h4>
+    <div class="code-block"><pre><span class="k">data_type  array_name</span>[<span class="v">rows</span>][<span class="v">columns</span>];</pre></div>
+    <p>To access element at row <code>r</code>, column <code>c</code>: use <code>array_name[r][c]</code></p>
+  </div>
+
+  <h3>Visualising a 3×4 Array</h3>
+  <p>This is <code>int a[3][4]</code> — 3 rows, 4 columns, 12 total cells.</p>
+
+  <div class="arr-vis-wrap" style="text-align:center;">
+    <div class="grid2d" style="display:inline-block;">
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:60px;"></div>
+        <div class="grid2d-cell col-header">col 0</div>
+        <div class="grid2d-cell col-header">col 1</div>
+        <div class="grid2d-cell col-header">col 2</div>
+        <div class="grid2d-cell col-header">col 3</div>
+      </div>
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:60px;color:#8899bb;font-size:.75rem;">row 0</div>
+        <div class="grid2d-cell" title="a[0][0]">0</div>
+        <div class="grid2d-cell" title="a[0][1]">1</div>
+        <div class="grid2d-cell" title="a[0][2]">2</div>
+        <div class="grid2d-cell" title="a[0][3]">3</div>
+      </div>
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:60px;color:#8899bb;font-size:.75rem;">row 1</div>
+        <div class="grid2d-cell" title="a[1][0]">4</div>
+        <div class="grid2d-cell" title="a[1][1]">5</div>
+        <div class="grid2d-cell" title="a[1][2]">6</div>
+        <div class="grid2d-cell" title="a[1][3]">7</div>
+      </div>
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:60px;color:#8899bb;font-size:.75rem;">row 2</div>
+        <div class="grid2d-cell" title="a[2][0]">8</div>
+        <div class="grid2d-cell" title="a[2][1]">9</div>
+        <div class="grid2d-cell" title="a[2][2]">10</div>
+        <div class="grid2d-cell" title="a[2][3]">11</div>
+      </div>
+    </div>
+  </div>
+  <p style="color:#8899bb;font-size:.9rem;text-align:center;margin-top:8px;">Hover over cells to see their coordinates!</p>
+
+  <div class="infobox green">
+    <h4>🔑 Access Pattern</h4>
+    <p><code>a[0][0]</code> = top-left = 0 &nbsp;|&nbsp; <code>a[0][3]</code> = top-right = 3 &nbsp;|&nbsp; <code>a[2][3]</code> = bottom-right = 11</p>
+  </div>
+
+  <h3>Initialising a 2D Array</h3>
+  <div class="code-block"><pre><span class="c">// Full initialisation with row grouping</span>
+<span class="k">int</span> a[3][4] = {
+    {0, 1, 2, 3},    <span class="c">// row 0</span>
+    {4, 5, 6, 7},    <span class="c">// row 1</span>
+    {8, 9, 10, 11}   <span class="c">// row 2</span>
+};</pre></div>
+
+  <h3>Traversing a 2D Array — Nested Loops!</h3>
+  <div class="infobox orange">
+    <h4>Rule: One loop for rows, one loop for columns — NESTED together</h4>
+    <p>The outer loop counts rows (<code>r</code>). The inner loop counts columns (<code>c</code>). For every single row, the inner loop goes through ALL columns before moving to the next row.</p>
+  </div>
+
+  <div class="code-block"><pre><span class="k">int</span> arr[3][3], r, c;
+<span class="k">for</span> (r = 0; r < 3; r++) {          <span class="c">// outer: rows 0,1,2</span>
+    <span class="k">for</span> (c = 0; c < 3; c++) {       <span class="c">// inner: cols 0,1,2 for EACH row</span>
+        <span class="k">printf</span>(<span class="s">"%d\t"</span>, arr[r][c]);  <span class="c">// \t = tab for alignment</span>
+    }
+    <span class="k">printf</span>(<span class="s">"\n"</span>);                   <span class="c">// newline after each full row</span>
+}</pre></div>
+
+  <div class="section-divider"></div>
+
+  <!-- LAB 5 -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 5</div>
+    <h4>Roblox Game Grid — 2D Array</h4>
+    <p>Create a 3×3 Roblox mini-map grid. Accept 9 zone "danger level" values from the user and display them as a grid. Then tell the user if the centre zone (row 1, col 1) is dangerous (value &gt; 50).</p>
+    <ul class="task-list">
+      <li>Declare <code>int grid[3][3];</code></li>
+      <li>Use nested loops to accept input: for each row and each column</li>
+      <li>Use nested loops to print the grid with tabs (\t) and newlines</li>
+      <li>Check if <code>grid[1][1] &gt; 50</code> and print a warning!</li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-hint" onclick="toggleBox('hint5a')">💡 Hint 1: Nested Input</button>
+      <button class="btn btn-hint" onclick="toggleBox('hint5b')">💡 Hint 2: Centre Check</button>
+      <button class="btn btn-answer" onclick="toggleBox('ans5')">✅ Show Answer</button>
+    </div>
+    <div class="hint-box" id="hint5a">
+      <code>for (r=0; r&lt;3; r++) { for (c=0; c&lt;3; c++) { printf("Row %d Col %d: ", r, c); scanf("%d", &grid[r][c]); } }</code> — same nested structure, but with scanf instead of printf.
+    </div>
+    <div class="hint-box" id="hint5b">
+      The centre cell of a 3×3 grid is row 1, col 1 (remember 0-based!). So: <code>if (grid[1][1] &gt; 50) { printf("⚠️ Centre zone is DANGEROUS!\n"); }</code>
+    </div>
+    <div class="answer-box" id="ans5">
+      <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> grid[3][3];
+    <span class="k">int</span> r, c;
+
+    <span class="k">printf</span>(<span class="s">"Enter danger levels for 3x3 Roblox map:\n"</span>);
+    <span class="k">for</span> (r = 0; r < 3; r++) {
+        <span class="k">for</span> (c = 0; c < 3; c++) {
+            <span class="k">printf</span>(<span class="s">"Zone [%d][%d]: "</span>, r, c);
+            <span class="k">scanf</span>(<span class="s">"%d"</span>, &grid[r][c]);
+        }
+    }
+
+    <span class="k">printf</span>(<span class="s">"\n🗺️  Map:\n"</span>);
+    <span class="k">for</span> (r = 0; r < 3; r++) {
+        <span class="k">for</span> (c = 0; c < 3; c++) {
+            <span class="k">printf</span>(<span class="s">"%d\t"</span>, grid[r][c]);
+        }
+        <span class="k">printf</span>(<span class="s">"\n"</span>);
+    }
+
+    <span class="k">if</span> (grid[1][1] > 50) {
+        <span class="k">printf</span>(<span class="s">"\n⚠️  DANGER: Centre zone is HOT! Stay back!\n"</span>);
+    } <span class="k">else</span> {
+        <span class="k">printf</span>(<span class="s">"\n✅ Centre zone is safe to enter.\n"</span>);
+    }
+    <span class="k">return</span> 0;
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== MATRIX OPS ===== -->
+<div id="matrix" class="section">
+<div class="card">
+  <h2>➕ Matrix Operations</h2>
+  <p>A 2D array is also called a <strong>matrix</strong> in mathematics. C is powerful for matrix operations — addition, subtraction, and multiplication are all doable with nested loops.</p>
+
+  <h3>Matrix Addition — The Concept</h3>
+  <div class="infobox green">
+    <h4>Rule: Add element-by-element at matching positions</h4>
+    <p><code>sum[r][c] = first[r][c] + second[r][c]</code></p>
+    <p>Both matrices MUST be the same size (same rows AND same columns)!</p>
+  </div>
+
+  <div class="arr-vis-wrap">
+    <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:center;align-items:center;">
+      <div>
+        <p style="color:var(--neon);text-align:center;font-size:.85rem;margin-bottom:8px;">Matrix A</p>
+        <div class="grid2d">
+          <div class="grid2d-row"><div class="grid2d-cell">1</div><div class="grid2d-cell">2</div></div>
+          <div class="grid2d-row"><div class="grid2d-cell">3</div><div class="grid2d-cell">4</div></div>
+        </div>
+      </div>
+      <div style="font-size:2rem;color:var(--neon);">+</div>
+      <div>
+        <p style="color:var(--neon2);text-align:center;font-size:.85rem;margin-bottom:8px;">Matrix B</p>
+        <div class="grid2d">
+          <div class="grid2d-row"><div class="grid2d-cell" style="border-color:rgba(0,207,255,.4);background:rgba(0,207,255,.08);color:var(--neon2);">5</div><div class="grid2d-cell" style="border-color:rgba(0,207,255,.4);background:rgba(0,207,255,.08);color:var(--neon2);">6</div></div>
+          <div class="grid2d-row"><div class="grid2d-cell" style="border-color:rgba(0,207,255,.4);background:rgba(0,207,255,.08);color:var(--neon2);">7</div><div class="grid2d-cell" style="border-color:rgba(0,207,255,.4);background:rgba(0,207,255,.08);color:var(--neon2);">8</div></div>
+        </div>
+      </div>
+      <div style="font-size:2rem;color:var(--yellow);">=</div>
+      <div>
+        <p style="color:var(--yellow);text-align:center;font-size:.85rem;margin-bottom:8px;">Sum</p>
+        <div class="grid2d">
+          <div class="grid2d-row"><div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">6</div><div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">8</div></div>
+          <div class="grid2d-row"><div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">10</div><div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">12</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>Textbook Program: Matrix Addition</h3>
+  <div class="code-block"><pre><span class="c">//Program: Matrix Addition</span>
+<span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> m, n, c, d;
+    <span class="k">int</span> first[10][10], second[10][10], sum[10][10];
+
+    <span class="k">printf</span>(<span class="s">"Enter the order of the matrices:\n"</span>);
+    <span class="k">scanf</span>(<span class="s">"%d%d"</span>, &m, &n);
+
+    <span class="k">printf</span>(<span class="s">"\nEnter elements of first matrix:\n"</span>);
+    <span class="k">for</span> (c = 0; c < m; c++)
+        <span class="k">for</span> (d = 0; d < n; d++)
+            <span class="k">scanf</span>(<span class="s">"%d"</span>, &first[c][d]);
+
+    <span class="k">printf</span>(<span class="s">"Enter elements of second matrix:\n"</span>);
+    <span class="k">for</span> (c = 0; c < m; c++)
+        <span class="k">for</span> (d = 0; d < n; d++)
+            <span class="k">scanf</span>(<span class="s">"%d"</span>, &second[c][d]);
+
+    <span class="k">for</span> (c = 0; c < m; c++)
+        <span class="k">for</span> (d = 0; d < n; d++)
+            sum[c][d] = first[c][d] + second[c][d];
+
+    <span class="k">printf</span>(<span class="s">"\nSum of entered matrices:\n"</span>);
+    <span class="k">for</span> (c = 0; c < m; c++) {
+        <span class="k">for</span> (d = 0; d < n; d++)
+            <span class="k">printf</span>(<span class="s">"%d\t"</span>, sum[c][d]);
+        <span class="k">printf</span>(<span class="s">"\n"</span>);
+    }
+    <span class="k">return</span> 0;
+}</pre></div>
+
+  <div class="section-divider"></div>
+
+  <!-- LAB 6 -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 6 — Activity #7 from Textbook!</div>
+    <h4>Matrix Multiplication — The Boss Level</h4>
+    <p>This is the challenge from your textbook! Accept the dimensions of two 2D arrays. Check if multiplication is valid (columns of first = rows of second). If valid, perform matrix multiplication.</p>
+    <div class="infobox purple">
+      <h4>🧮 Matrix Multiplication Rule</h4>
+      <p>For multiply[c][d]: sum ALL the products <code>first[c][k] * second[k][d]</code> for k = 0 to (n-1). This requires THREE nested loops: row of first, column of second, and the inner product loop.</p>
+      <p>Result: <code>multiply[c][d] += first[c][k] * second[k][d]</code></p>
+    </div>
+    <ul class="task-list">
+      <li>Accept m×n dimensions for first matrix</li>
+      <li>Accept p×q dimensions for second matrix</li>
+      <li>Check: if n ≠ p, print "Cannot multiply!" and exit</li>
+      <li>Otherwise: use THREE nested loops (c, d, k) to compute product</li>
+      <li>Reset sum=0 before each new element computation!</li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-hint" onclick="toggleBox('hint6a')">💡 Hint 1: The Three Loops</button>
+      <button class="btn btn-hint" onclick="toggleBox('hint6b')">💡 Hint 2: Reset Sum</button>
+      <button class="btn btn-answer" onclick="toggleBoxEgg('ans6','egg_matrix')">✅ Show Answer</button>
+    </div>
+    <div class="hint-box" id="hint6a">
+      The multiplication loops: <code>for(c=0;c&lt;m;c++) { for(d=0;d&lt;q;d++) { sum=0; for(k=0;k&lt;p;k++) { sum += first[c][k]*second[k][d]; } multiply[c][d]=sum; } }</code>
+    </div>
+    <div class="hint-box" id="hint6b">
+      Why <code>sum = 0</code> inside the outer two loops? Because each element of the result matrix is a fresh accumulation. If you don't reset, you keep adding from the previous element's calculation! Put <code>sum = 0;</code> right before the innermost loop.
+    </div>
+    <div class="answer-box" id="ans6">
+      <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span> m, n, p, q, c, d, k, sum = 0;
+    <span class="k">int</span> first[10][10], second[10][10], multiply[10][10];
+
+    <span class="k">printf</span>(<span class="s">"Rows and cols of first matrix: "</span>);
+    <span class="k">scanf</span>(<span class="s">"%d%d"</span>, &m, &n);
+
+    <span class="k">printf</span>(<span class="s">"Rows and cols of second matrix: "</span>);
+    <span class="k">scanf</span>(<span class="s">"%d%d"</span>, &p, &q);
+
+    <span class="k">if</span> (n != p) {
+        <span class="k">printf</span>(<span class="s">"Matrices can't be multiplied! (cols of A must equal rows of B)\n"</span>);
+        <span class="k">return</span> 1;
+    }
+
+    <span class="k">printf</span>(<span class="s">"Enter elements of first matrix:\n"</span>);
+    <span class="k">for</span> (c = 0; c < m; c++)
+        <span class="k">for</span> (d = 0; d < n; d++)
+            <span class="k">scanf</span>(<span class="s">"%d"</span>, &first[c][d]);
+
+    <span class="k">printf</span>(<span class="s">"Enter elements of second matrix:\n"</span>);
+    <span class="k">for</span> (c = 0; c < p; c++)
+        <span class="k">for</span> (d = 0; d < q; d++)
+            <span class="k">scanf</span>(<span class="s">"%d"</span>, &second[c][d]);
+
+    <span class="c">// Three nested loops: row c, col d, inner product k</span>
+    <span class="k">for</span> (c = 0; c < m; c++) {
+        <span class="k">for</span> (d = 0; d < q; d++) {
+            sum = 0;                        <span class="c">// reset for each new cell!</span>
+            <span class="k">for</span> (k = 0; k < p; k++) {
+                sum += first[c][k] * second[k][d];
+            }
+            multiply[c][d] = sum;
+        }
+    }
+
+    <span class="k">printf</span>(<span class="s">"\nProduct matrix:\n"</span>);
+    <span class="k">for</span> (c = 0; c < m; c++) {
+        <span class="k">for</span> (d = 0; d < q; d++)
+            <span class="k">printf</span>(<span class="s">"%d\t"</span>, multiply[c][d]);
+        <span class="k">printf</span>(<span class="s">"\n"</span>);
+    }
+    <span class="k">return</span> 0;
+}</pre></div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== REFACTOR ===== -->
+<div id="refactor" class="section">
+<div class="card">
+  <h2>🛠 Refactor Lab — Putting It All Together</h2>
+
+  <div class="callout">
+    <div class="label">🎯 The Grand Challenge</div>
+    <p>You've learned array declaration, initialisation, traversal, and 2D arrays. Now let's build something that combines ALL of it! This lab will take you from "I think I understand" to "I can actually write this myself."</p>
+  </div>
+
+  <h3>The Scenario: SKN Soca Festival Scoreboard 🎺</h3>
+  <div class="infobox orange">
+    <p>Imagine you're building the scoring system for a St. Kitts Soca competition. 5 performers. 3 judges. Each judge gives each performer a score (0–100). Your program must: accept all scores into a 2D array, compute each performer's average, and declare the winner!</p>
+  </div>
+
+  <h3>Data Layout — Visualised</h3>
+  <div class="arr-vis-wrap" style="text-align:center;">
+    <div class="grid2d" style="display:inline-block;">
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:90px;">Performer</div>
+        <div class="grid2d-cell col-header">Judge 1</div>
+        <div class="grid2d-cell col-header">Judge 2</div>
+        <div class="grid2d-cell col-header">Judge 3</div>
+        <div class="grid2d-cell col-header" style="color:var(--yellow);">Avg</div>
+      </div>
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:90px;color:var(--neon);font-size:.78rem;">scores[0]</div>
+        <div class="grid2d-cell">88</div><div class="grid2d-cell">92</div><div class="grid2d-cell">79</div>
+        <div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">86.3</div>
+      </div>
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:90px;color:var(--neon);font-size:.78rem;">scores[1]</div>
+        <div class="grid2d-cell">95</div><div class="grid2d-cell">91</div><div class="grid2d-cell">97</div>
+        <div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">94.3 🏆</div>
+      </div>
+      <div class="grid2d-row">
+        <div class="grid2d-cell col-header" style="width:90px;color:var(--neon);font-size:.78rem;">scores[2]</div>
+        <div class="grid2d-cell">76</div><div class="grid2d-cell">84</div><div class="grid2d-cell">80</div>
+        <div class="grid2d-cell" style="border-color:rgba(255,217,61,.4);background:rgba(255,217,61,.08);color:var(--yellow);">80.0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- THE BIG LAB -->
+  <div class="lab-box">
+    <div class="lab-badge">🧪 LAB 7 — THE MAIN EVENT</div>
+    <h4>SKN Soca Festival Scorer (5 Performers, 3 Judges)</h4>
+    <ul class="task-list">
+      <li>Declare: <code>int scores[5][3];</code> and <code>float avg[5];</code></li>
+      <li>Use nested loops to accept all 15 scores (5 performers × 3 judges)</li>
+      <li>Use nested loops to compute each performer's average (sum the 3 judge scores, divide by 3.0)</li>
+      <li>Find the winner: track which performer index has the highest average</li>
+      <li>Print a full scoreboard table AND announce the winner!</li>
+    </ul>
+    <div class="btn-row">
+      <button class="btn btn-hint" onclick="toggleBox('hint7a')">💡 Hint 1: Avg Calculation</button>
+      <button class="btn btn-hint" onclick="toggleBox('hint7b')">💡 Hint 2: Find Winner</button>
+      <button class="btn btn-hint" onclick="toggleBox('hint7c')">💡 Hint 3: Cast to float</button>
+      <button class="btn btn-answer" onclick="toggleBoxEgg('ans7','egg_soca')">✅ Show Complete Answer</button>
+    </div>
+    <div class="hint-box" id="hint7a">
+      For averages: loop through performers (p=0 to 4). Inside, loop through judges (j=0 to 2) and sum: <code>total += scores[p][j];</code>. After inner loop: <code>avg[p] = (float)total / 3;</code>. Reset total=0 before each performer's inner loop!
+    </div>
+    <div class="hint-box" id="hint7b">
+      For winner: declare <code>int winIdx = 0;</code> before the check loop. Then: <code>if (avg[p] &gt; avg[winIdx]) { winIdx = p; }</code>. At the end, <code>winIdx+1</code> is the winner's number and <code>avg[winIdx]</code> is their average.
+    </div>
+    <div class="hint-box" id="hint7c">
+      Why <code>(float)total / 3</code> instead of <code>total / 3</code>? Because integer division truncates! 88+92+79 = 259. 259/3 in int-land = 86 (drops the .3). Casting to float: 259.0/3 = 86.3. Always cast when you need decimals!
+    </div>
+    <div class="answer-box" id="ans7">
+      <div class="code-block"><pre><span class="k">#include</span> <span class="s">&lt;stdio.h&gt;</span>
+<span class="k">int</span> main() {
+    <span class="k">int</span>   scores[5][3];
+    <span class="k">float</span> avg[5];
+    <span class="k">int</span>   p, j, total, winIdx = 0;
+
+    <span class="c">// ── Accept all scores ──</span>
+    <span class="k">for</span> (p = 0; p < 5; p++) {
+        <span class="k">printf</span>(<span class="s">"\n--- Performer %d ---\n"</span>, p + 1);
+        <span class="k">for</span> (j = 0; j < 3; j++) {
+            <span class="k">printf</span>(<span class="s">"  Judge %d score: "</span>, j + 1);
+            <span class="k">scanf</span>(<span class="s">"%d"</span>, &scores[p][j]);
+        }
+    }
+
+    <span class="c">// ── Compute averages ──</span>
+    <span class="k">for</span> (p = 0; p < 5; p++) {
+        total = 0;
+        <span class="k">for</span> (j = 0; j < 3; j++)
+            total += scores[p][j];
+        avg[p] = (float)total / 3;
+    }
+
+    <span class="c">// ── Find winner ──</span>
+    <span class="k">for</span> (p = 1; p < 5; p++)
+        <span class="k">if</span> (avg[p] > avg[winIdx]) winIdx = p;
+
+    <span class="c">// ── Print scoreboard ──</span>
+    <span class="k">printf</span>(<span class="s">"\n🎺 ====== SKN SOCA FESTIVAL SCORES ====== 🎺\n"</span>);
+    <span class="k">printf</span>(<span class="s">"%-12s %8s %8s %8s %8s\n"</span>,
+        "Performer", "Judge 1", "Judge 2", "Judge 3", "Average");
+    <span class="k">printf</span>(<span class="s">"--------------------------------------------------\n"</span>);
+
+    <span class="k">for</span> (p = 0; p < 5; p++) {
+        <span class="k">printf</span>(<span class="s">"Performer %-2d %8d %8d %8d %8.1f"</span>,
+            p + 1, scores[p][0], scores[p][1], scores[p][2], avg[p]);
+        <span class="k">if</span> (p == winIdx) <span class="k">printf</span>(<span class="s">" 🏆 WINNER!"</span>);
+        <span class="k">printf</span>(<span class="s">"\n"</span>);
+    }
+    <span class="k">printf</span>(<span class="s">"\n🎉 Congratulations Performer %d! Average: %.1f\n"</span>,
+        winIdx + 1, avg[winIdx]);
+    <span class="k">return</span> 0;
+}</pre></div>
+      <p>🎯 This program uses EVERY array concept: 2D array for input, 1D float array for averages, nested loops for traversal, and index-tracking for the winner!</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ===== QUIZ ===== -->
+<div id="quiz" class="section">
+<div class="card">
+  <h2>🏆 Arrays Quiz — 25 Questions!</h2>
+  <p>Prove your array mastery! Answer all 25 questions.</p>
+  <div class="progress-wrap"><div class="progress-fill" id="q-progress"></div></div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>1. Given <code>int arr[5];</code> — what is the index of the LAST valid element?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 5</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 4</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) 6</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) 0</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="a">
+    <h4>2. What index does C use for the FIRST element of any array?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 0</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 1</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) -1</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) Depends on the array</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>3. What is printed by: <code>int a[] = {10,20,30}; printf("%d", a[1]);</code>?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 10</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 30</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) 20</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) 1</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="d">
+    <h4>4. Which declaration correctly initialises a 5-element integer array?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) int arr(5) = {1,2,3,4,5};</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) array int[5] = {1,2,3,4,5};</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) int arr = {1,2,3,4,5};</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) int arr[5] = {1,2,3,4,5};</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>5. What data types can an array store?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) Only integers</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) Any single data type — all elements must be the same type</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) Mixed types — int and float together</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) Only floats and chars</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="a">
+    <h4>6. What happens to unspecified elements in a partial initialisation? e.g. <code>int x[5] = {7, 3};</code></h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) They are set to 0 automatically</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) They contain random garbage values</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) The program crashes</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) They copy the last specified value</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>7. Which for-loop correctly traverses an array of size 10?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) for(i=1; i&lt;=10; i++)</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) for(i=0; i&lt;=10; i++)</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) for(i=0; i&lt;10; i++)</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) for(i=1; i&lt;10; i++)</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="d">
+    <h4>8. To read into an array element using scanf, you write:</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) scanf("%d", arr[i]);</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) scanf("%d", *arr[i]);</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) scanf("%d", arr(i));</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) scanf("%d", &arr[i]);</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>9. Given <code>int scores[7] = {120,145,200,98,310,275,180};</code> — what is <code>scores[4]</code>?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 98</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 310</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) 200</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) 275</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>10. To find the maximum value in an array, you should initialise your max variable to:</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 0</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 999</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) The first element of the array (arr[0])</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) -1</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="a">
+    <h4>11. To print an array in reverse, a loop that counts from index 4 down to 0 uses:</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) for(i=4; i&gt;=0; i--)</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) for(i=4; i&gt;0; i--)</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) for(i=5; i&gt;=0; i--)</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) for(i=4; i&lt;=0; i++)</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>12. How do you declare a 2D array with 3 rows and 4 columns of integers?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) int arr[4][3];</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) int arr[3][4];</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) int arr[3,4];</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) int arr(3)(4);</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="d">
+    <h4>13. In a 2D array <code>int g[3][3]</code>, what is the element at the centre (row 1, col 1)?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) g[2][2]</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) g[0][0]</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) g[3][3]</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) g[1][1]</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>14. To traverse a 2D array, you use:</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) A single for loop</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) A while loop only</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) Two nested for loops — one for rows, one for columns</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) Three nested for loops always</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="a">
+    <h4>15. For matrix addition, which condition must be true about the two matrices?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) They must have the same number of rows AND columns</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) The columns of A must equal the rows of B</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) They must both be square matrices</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) No restriction — any two matrices can be added</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>16. For matrix multiplication, which condition must be true?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) Both matrices must be the same size</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) The number of columns of the first = number of rows of the second</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) Both must have the same number of rows only</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) Any two matrices can be multiplied</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>17. How many nested loops does matrix multiplication require?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 1</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 2</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) 3</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) 4</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="d">
+    <h4>18. In the matrix multiplication code, WHY must you reset <code>sum = 0</code> inside the outer loops?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) Because sum is a float</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) Because the arrays are large</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) It doesn't matter — sum resets automatically</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) Each result cell needs a fresh accumulation — without reset, previous sums carry over</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="a">
+    <h4>19. Given <code>int arr[5] = {10, 20, 30, 40, 50};</code> — what does <code>arr[2] = arr[2] + arr[0];</code> produce for arr[2]?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 40</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 30</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) 50</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) 20</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>20. Why do we write <code>(float)total / 3</code> instead of <code>total / 3</code> when computing averages?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) Float division is always faster</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) Integer division truncates the decimal — casting ensures we get the accurate decimal result</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) C requires the cast to avoid a syntax error</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) There is no difference</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>21. In the Soca scoreboard lab, why do we print <code>winIdx + 1</code> for the winner?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) To avoid a divide-by-zero error</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) Because performer arrays start at -1</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) Arrays are 0-indexed but humans count from 1 — adding 1 converts to a human-readable number</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) To get the next performer's index</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="d">
+    <h4>22. Which is a valid way to access the element in row 2, column 1 of array <code>int m[4][4]</code>?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) m[2,1]</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) m(2)(1)</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) m[2+1]</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) m[2][1]</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="a">
+    <h4>23. An array stores elements in __________ memory locations.</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) Contiguous (side-by-side)</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) Random scattered</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) Alternating every other slot</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) In sorted order always</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="b">
+    <h4>24. <code>int arr[10];</code> reserves space for how many integer values?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) 9</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) 10</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) 11</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) 0</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <div class="quiz-q" data-correct="c">
+    <h4>25. Why is an array better than declaring 50 individual variables?</h4>
+    <div class="quiz-opts">
+      <div class="quiz-opt" data-val="a" onclick="pickOpt(this)">A) Arrays use less memory than individual variables</div>
+      <div class="quiz-opt" data-val="b" onclick="pickOpt(this)">B) Arrays always sort themselves automatically</div>
+      <div class="quiz-opt" data-val="c" onclick="pickOpt(this)">C) Arrays can be traversed with loops — one name, one loop handles all elements instead of 50 separate lines of code</div>
+      <div class="quiz-opt" data-val="d" onclick="pickOpt(this)">D) Arrays can hold different data types in one container</div>
+    </div><div class="qfeedback"></div>
+  </div>
+
+  <button class="btn btn-submit" style="width:100%;font-size:1.1rem;padding:18px;margin-top:20px;" onclick="submitQuiz()">🚀 Submit &amp; Get My Score!</button>
+
+  <div class="result-box" id="result-box">
+    <div class="trophy" id="trophy-icon">🏆</div>
+    <div class="result-score" id="result-score">0/25</div>
+    <p id="result-msg" style="font-size:1.2rem;color:#c0d4ee;margin:10px 0;"></p>
+    <button class="btn btn-submit" onclick="resetQuiz()" style="margin-top:15px;">🔄 Try Again</button>
+  </div>
+</div>
+</div>
+
+</div><!-- end container -->
+
+<script>
+let xp = 0;
+function addXP(pts){ xp+=pts; const max=600; const pct=Math.min((xp/max)*100,100); document.getElementById('xp-fill').style.width=pct+'%'; document.getElementById('xp-text').textContent=xp+' XP'; }
+
+function showSection(id){
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  addXP(10);
+}
+
+function toggleBox(id){ const el=document.getElementById(id); el.classList.toggle('show'); addXP(5); }
+function toggleBoxEgg(answerId,eggId){ toggleBox(answerId); triggerEgg(eggId); addXP(25); }
+
+const eggs = {
+  egg_67: {
+    title:"🎶 6 & 7 — The Riddim That Runs the Island!",
+    body:`<em>"SHE PUT HER HANDS IN THE AIR, LIKE SHE JUST DON'T CARE..."</em><br><br>
+That array had values 6 and 7 at the first two slots — a nod to <strong>Machel Montano's legendary "6-7" soca anthem</strong> 🎺🎉 The song that doesn't need an intro — the first beat and every Kittitian in the room loses their mind!<br><br>
+<strong>The Array Connection:</strong> Just like index 0 and index 1 come RIGHT next to each other in memory (contiguous!), the 6 and the 7 in that soca riddim hit back-to-back with no gap. Contiguous memory, contiguous vibes. 🔥`
+  },
+  egg_drops: {
+    title:"💧 Drops Array — Now You're Thinking Like a Dev!",
+    body:`You correctly traced through that array — you're thinking like a professional programmer now! 🔥<br><br>
+<strong>The key insight:</strong> <code>drops[1] = drops[1] + drops[3]</code> is the same as <code>drops[1] += drops[3]</code>.<br><br>
+In real apps: imagine a Spotify feature that merges two playlists. If playlist A has 200 songs and playlist B has 400 songs, the combined count is stored back into A's slot. <strong>Same operation, different scale!</strong>`
+  },
+  egg_reverse: {
+    title:"⏪ Reverse Array = Algorithm Thinking!",
+    body:`Reversing an array is one of the most common interview questions at companies like Google, Meta, and Amazon! 🚀<br><br>
+The trick you just used — counting down with <code>i--</code> — is called traversing in reverse order.<br><br>
+<strong>Real-world uses:</strong><br>
+• Reversing a string ("hello" → "olleh")<br>
+• Undoing actions in a game (like Ctrl+Z)<br>
+• Reading a playlist backwards<br><br>
+You now know a technique used in real tech interviews. Screenshot that! 📸`
+  },
+  egg_matrix: {
+    title:"🧮 Matrix Multiplication COMPLETE!",
+    body:`<strong>BOSS LEVEL CLEARED!</strong> 🏆<br><br>
+Matrix multiplication is used in:<br>
+• <strong>3D game graphics</strong> — every time a character rotates in a game, the GPU multiplies transformation matrices<br>
+• <strong>AI/Machine Learning</strong> — neural networks are literally just massive matrix multiplications<br>
+• <strong>Physics simulations</strong> — in Minecraft's physics engine, object positions are tracked with matrices<br><br>
+You've just written the core of what every graphics card on the planet does billions of times per second! 🎮🔥`
+  },
+  egg_soca: {
+    title:"🎺 SKN SOCA FESTIVAL — CHAMPION CROWNED!",
+    body:`YOOOO that was the FULL package! You used:<br><br>
+✅ 2D array for input (scores[5][3])<br>
+✅ 1D float array for computed data (avg[5])<br>
+✅ Nested loops for traversal<br>
+✅ Index tracking for winner<br>
+✅ Float casting for accurate averages<br>
+✅ Human-readable output (index+1)<br><br>
+<strong>This is exactly what real festival scoring software does</strong> — just with more judges and fancy UI on top. You've just written the backend of an actual competition app! 🎉<br><br>
+<em>Soca for life. Code for life. 🎶💻</em>`
+  }
+};
+
+function triggerEgg(id){
+  if(!eggs[id]) return;
+  document.getElementById('egg-title').textContent=eggs[id].title;
+  document.getElementById('egg-body').innerHTML=eggs[id].body;
+  document.getElementById('easter-egg').classList.add('show');
+  document.getElementById('overlay').classList.add('show');
+}
+function closeEgg(){
+  document.getElementById('easter-egg').classList.remove('show');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+function pickOpt(el){ const q=el.closest('.quiz-q'); q.querySelectorAll('.quiz-opt').forEach(o=>o.classList.remove('chosen')); el.classList.add('chosen'); updateQProgress(); }
+function updateQProgress(){ const total=document.querySelectorAll('.quiz-q').length; const answered=document.querySelectorAll('.quiz-opt.chosen').length; document.getElementById('q-progress').style.width=(answered/total*100)+'%'; }
+
+function submitQuiz(){
+  const questions=document.querySelectorAll('.quiz-q');
+  let correct=0;
+  questions.forEach(q=>{
+    const ans=q.dataset.correct;
+    const chosen=q.querySelector('.quiz-opt.chosen');
+    const fb=q.querySelector('.qfeedback');
+    if(chosen){
+      if(chosen.dataset.val===ans){ correct++; chosen.classList.add('correct'); fb.textContent='✓ Correct!'; fb.className='qfeedback show ok'; }
+      else{ chosen.classList.add('wrong'); q.querySelector('[data-val="'+ans+'"]').classList.add('correct'); fb.textContent='✗ Incorrect — the correct answer is highlighted in green.'; fb.className='qfeedback show no'; }
+    } else { fb.textContent='⚠️ No answer selected'; fb.className='qfeedback show no'; }
+  });
+  const pct=correct/questions.length;
+  const rb=document.getElementById('result-box'); rb.classList.add('show');
+  document.getElementById('result-score').textContent=correct+'/'+questions.length;
+  const msgs=[[.9,'🌟 ARRAY MASTER! You\'ve unlocked the next dimension of C programming! 🏆','🏆'],[.75,'🔥 Excellent! You\'ve got the foundation. Review your misses and you\'re unstoppable!','🥇'],[.6,'👍 Good effort! Re-read the sections on indexing and 2D arrays, then retry.','🥈'],[.4,'📚 Keep studying! Focus on zero-based indexing and nested loops — you\'ve got this!','💪'],[0,'🎮 Don\'t give up — revisit each section step by step. Arrays will click!','🌱']];
+  for(const [threshold,msg,icon] of msgs){ if(pct>=threshold){ document.getElementById('result-msg').textContent=msg; document.getElementById('trophy-icon').textContent=icon; break; } }
+  addXP(correct*15);
+  rb.scrollIntoView({behavior:'smooth'});
+}
+
+function resetQuiz(){
+  document.querySelectorAll('.quiz-opt').forEach(o=>o.className='quiz-opt');
+  document.querySelectorAll('.qfeedback').forEach(f=>f.className='qfeedback');
+  document.getElementById('result-box').classList.remove('show');
+  document.getElementById('q-progress').style.width='0%';
+  document.getElementById('quiz').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
